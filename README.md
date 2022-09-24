@@ -1,5 +1,7 @@
 # NHTSA-Fatality-Data
-National Highway Traffic Safety Administration Data on Fatalities from 1975-2020
+National Highway Traffic Safety Administration Fatality Analysis Report for data from 1975-2020.
+
+**Google DataStudio Dashboard for results can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
 
 ## Project Overview
 This project was performed as part of the [Data Engineering Zoomcamp Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) to use the course materials learned to build a data pipeline.
