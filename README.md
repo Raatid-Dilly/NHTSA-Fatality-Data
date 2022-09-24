@@ -95,7 +95,7 @@ df.select('STATE').distinct().show()
 **Apache Airflow Orchestration** - Apache Airflow is used to orchestrate the data ingestion and transformation pipelines and is ran in a [Docker](https://www.docker.com) container locally. The [airflow/dags](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/airflow/dags) directory contains the data-ingestion and transformation scripts that were executed.
 - ```data-ingestion_dag.py``` - DAG that downloads the NHTSA data for each year from 1975-2020 and uploads the information to the created Google data lake.
 - ```create_external_table_dag.py``` - DAG to create an external table for viewing the uploaded data from the data lake
-- ```dataproc_dag.py``` - DAG to create the DataProc Cluster and submit the PySpark job that performs the necessary data transformation. After the job is finished and saved to a BigQuery Dataset, the Cluster is deleted as to not incur usage fees.
+- ```dataproc_dag.py``` - DAG to create the DataProc Cluster and submit the PySpark job that performs the necessary data transformation. The script that will be used is found in the ```airflow``` directory and is [```pyspark_data_transform.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/airflow/pyspark_data_transform.py) After the job is finished and saved to a BigQuery Dataset, the Cluster is deleted as to not incur usage fees.
 
 # Results
 **Google DataStudio Dashboard can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
