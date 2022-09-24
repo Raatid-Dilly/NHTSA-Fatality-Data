@@ -24,7 +24,9 @@ The dataset used can be found here on the [NHTSA](https://www.nhtsa.gov/file-dow
 
 The official [NHTSA Manual](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/Fatality%20Analysis%20Reporting%20System%20(FARS)%20Analytical%20User’s%20Manual%2C%201975-2020.pdf) which contains a description of all columns and information relating to the values used is also included as a pdf file labeled Fatality Analysis Reporting System (FARS) Analytical User’s Manual, 1975-2020.pdf
 
-## Technologies Used
+## Architecture
+
+![alt workflow](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA.jpg)
 The project utilizes the following technologies:
 * Cloud: 
   - Google Cloud Platform:
@@ -40,11 +42,6 @@ The project utilizes the following technologies:
   - Apache Spark (PySpark)
 * Data Visualization
   - Google Data Studio
-
-## Architecture
-
-![alt workflow](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA.jpg)
-
 
 # Work
 **Local Development** - Before beginning the cloud process, the first step I took was local analysis of the data. To begin locally run the [```download_data.sh```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/download_data.sh) script which will download all the ```['Accident.csv', Person.csv, Vehicle.csv]``` files from the NHTSA site. Next use the [```local_spark.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/local_spark.py) script to format the columns in each csv file and saves the csv to parquet. After this is complete the parquet files could then be read and transformed with PySpark.
@@ -103,4 +100,4 @@ df.select('STATE').distinct().show()
 
 **Dashboard Example** - Here is an example of the Dashboard filtered by Chevrolet vehicles. It is clear that most fatalies involving Chevrolets occur in Texas and the amount of accidents and the amount of deaths has been on a decline since 1975.
 
-![alt dashboard](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA_Fatalilty_Analysis_Report_(FARS)1.jpg)
+![alt dashboard](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA_Fatality_Analysis_Report_(FARS)1.jpg)
