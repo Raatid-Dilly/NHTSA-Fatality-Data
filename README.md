@@ -43,3 +43,7 @@ The project utilizes the following technologies:
 
 ## Architecture
 
+![alt workflow](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA.jpg)
+
+# Work
+To replicate the project 
