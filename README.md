@@ -22,7 +22,7 @@ The dataset used can be found here on the [NHTSA](https://www.nhtsa.gov/file-dow
 * Vehicle.csv
   - Contains information such as the vehicle make, model, number of occupants, etc.
 
-The official [NHTSA Manual](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/Fatality%20Analysis%20Reporting%20System%20(FARS)%20Analytical%20User’s%20Manual%2C%201975-2020.pdf) which contains a description of all columns and information relating to the values used is also included as a pdf file labeled Fatality Analysis Reporting System (FARS) Analytical User’s Manual, 1975-2020.pdf
+The official [NHTSA Manual](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/Fatality%20Analysis%20Reporting%20System%20(FARS)%20Analytical%20User’s%20Manual%2C%201975-2020.pdf) which contains a description of all columns and information relating to the values used is also included as a .pdf file labeled Fatality Analysis Reporting System (FARS) Analytical User’s Manual, 1975-2020.pdf
 
 ## Architecture
 
@@ -44,7 +44,7 @@ The project utilizes the following technologies:
   - Google Data Studio
 
 # Work
-**Local Development** - Before beginning the cloud process, the first step I took was local analysis of the data. To begin locally run the [```download_data.sh```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/download_data.sh) script which will download all the ```['Accident.csv', Person.csv, Vehicle.csv]``` files from the NHTSA site. Next use the [```local_spark.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/local_spark.py) script to format the columns in each csv file and saves the csv to parquet. After this is complete the parquet files could then be read and transformed with PySpark.
+**Local Development** - Before beginning the cloud process, the first step I took was local analysis of the data. To begin locally run the [```download_data.sh```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/download_data.sh) script which will download all the ```['Accident.csv', Person.csv, Vehicle.csv]``` files from the NHTSA site. Next use the [```local_spark.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/local_spark.py) script to format the columns in each .csv file and save the .csv to .parquet. After this is complete the parquet files could then be read and transformed with PySpark.
 
 ```
 df = spark.read.option('header', 'true').parquet('./local/accident.parquet')
