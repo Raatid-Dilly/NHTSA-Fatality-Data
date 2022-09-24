@@ -22,7 +22,7 @@ The dataset used can be found here on the [NHTSA](https://www.nhtsa.gov/file-dow
 * Vehicle.csv
   - Contains information such as the vehicle make, model, number of occupants, etc.
 
-The official [NHTSA Manual](blob/main/Fatality%20Analysis%20Reporting%20System%20(FARS)%20Analytical%20User’s%20Manual%2C%201975-2020.pdf) which contains a description of all columns and information relating to the values used is also included as a pdf file labeled Fatality Analysis Reporting System (FARS) Analytical User’s Manual, 1975-2020.pdf
+The official [NHTSA Manual](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/Fatality%20Analysis%20Reporting%20System%20(FARS)%20Analytical%20User’s%20Manual%2C%201975-2020.pdf) which contains a description of all columns and information relating to the values used is also included as a pdf file labeled Fatality Analysis Reporting System (FARS) Analytical User’s Manual, 1975-2020.pdf
 
 ## Technologies Used
 The project utilizes the following technologies:
