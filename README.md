@@ -45,6 +45,7 @@ The project utilizes the following technologies:
 
 ![alt workflow](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA.jpg)
 
+
 # Work
 **Local Development** - Before beginning the cloud process, the first step I took was local analysis of the data. To begin locally run the [```download_data.sh```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/download_data.sh) script which will download all the ```['Accident.csv', Person.csv, Vehicle.csv]``` files from the NHTSA site. Next use the [```local_spark.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/local_spark.py) script to format the columns in each csv file and saves the csv to parquet. After this is complete the parquet files could then be read and transformed with PySpark.
 
@@ -82,7 +83,6 @@ df = df.withColumn('STATE', states_udf(df.STATE))
 df.select('STATE').distinct().show()
 ```
 
-
 **Google Cloud Platform** - Next was creating a [GCP account](https://cloud.google.com). This included creating a new project in the cloud for this project and setting the necessary permission that are required to have access to files. These include (Storage Admin, Storage Object Admin, BigQuery Admin, Dataproc Administrator, and Dataproc Worker). It is also important to download the google auth-keys .json file on the Service Account Page. Refer [here](https://cloud.google.com/docs/authentication/provide-credentials-adc) for instructions on how to properly authenticate.
 
 **Infrastructure as Code Iac (Terraform)** - Terraform is used to setup the neccessary google cloud storage(Data Lake) and BigQuery Datasets (Data Warehouse) for the project. To begin the Terraform process, go to the Terraform directory in your CLI and run the following:
@@ -98,4 +98,9 @@ df.select('STATE').distinct().show()
 - ```create_external_table_dag.py``` - DAG to create an external table for viewing the uploaded data from the data lake
 - ```dataproc_dag.py``` - DAG to create the DataProc Cluster and submit the PySpark job that performs the necessary data transformation. After the job is finished and saved to a BigQuery Dataset, the Cluster is deleted as to not incur usage fees.
 
+# Results
+**Google DataStudio Dashboard can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
 
+**Dashboard Example** - Here is an example of the Dashboard filtered by Chevrolet vehicles. It is clear that most fatalies involving Chevrolets occur in Texas and the amount of accidents and the amount of deaths has been on a decline since 1975.
+
+![alt dashboard](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA_Fatalilty_Analysis_Report_(FARS)1.jpg)
