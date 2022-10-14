@@ -1,19 +1,15 @@
 import argparse
 from pyspark.sql import SparkSession, types, functions as F
 
-
 parser = argparse.ArgumentParser()
-
 parser.add_argument('--input_accident', required=True)
 parser.add_argument('--input_person', required=True)
 parser.add_argument('--input_vehicle', required=True)
-
 args = parser.parse_args()
 
 input_accident = args.input_accident
 input_person = args.input_person
 input_vehicle = args.input_vehicle
-
 
 spark = SparkSession.builder \
     .master('yarn') \
@@ -23,11 +19,17 @@ spark = SparkSession.builder \
 bucket = '<YOUR TEMPORARY BUCKET>'
 spark.conf.set('temporaryGcsBucket', bucket)
 
-accident_columns = ["ST_CASE", "YEAR", "MONTH", "DAY", "DAY_WEEK", "HOUR", "MINUTE", "STATE", "CITY", "COUNTY", "NOT_HOUR", "NOT_MIN", "ARR_HOUR", "ARR_MIN", "HOSP_HR", "HOSP_MN", "PERSONS", "FATALS", "DRUNK_DR", "LGT_COND", "WEATHER","VE_FORMS", "VE_TOTAL", "PERMVIT", "PERNOTMVIT", "PEDS", "PVH_INVL", "NHS", "ROUTE", "CL_TWAY", "RUR_URB", "LAND_USE", "ROAD_FNC", "HARM_EV", "MAN_COLL", "TYP_INT", "REL_JUNC", "RELJCT2", "REL_ROAD", "SCH_BUS",  "LATITUDE", "LONGITUD"]
+accident_columns = ["ST_CASE", "YEAR", "MONTH", "DAY", "DAY_WEEK", "HOUR", "MINUTE", "STATE", "CITY", "COUNTY",
+"NOT_HOUR", "NOT_MIN", "ARR_HOUR", "ARR_MIN", "HOSP_HR", "HOSP_MN", "PERSONS", "FATALS", "DRUNK_DR", "LGT_COND", 
+"WEATHER","VE_FORMS", "VE_TOTAL", "PERMVIT", "PERNOTMVIT", "PEDS", "PVH_INVL", "NHS", "ROUTE", "CL_TWAY",
+"RUR_URB", "LAND_USE", "ROAD_FNC", "HARM_EV", "MAN_COLL", "TYP_INT", "REL_JUNC", "RELJCT2", "REL_ROAD",
+"SCH_BUS",  "LATITUDE", "LONGITUD"]
 
-person_columns = ['AGE', 'SEX', 'RACE', 'MAKE', "MOD_YEAR", 'DRINKING', 'DRUGS', 'INJ_SEV', 'VEH_NO', 'PER_NO', 'ST_CASE', 'YEAR']
+person_columns = ['AGE', 'SEX', 'RACE', 'MAKE', "MOD_YEAR", 'DRINKING', 'DRUGS', 'INJ_SEV', 'VEH_NO', 'PER_NO',
+'ST_CASE', 'YEAR']
 
-vehicle_columns = ['NUMOCCS', 'MAKE', "MOD_YEAR",'REG_STAT', 'L_STAT', 'DR_ZIP', 'DR_HGT', 'DR_WGT', 'DR_DRINK', 'DEATHS', 'VEH_NO', 'TRAV_SP', 'ST_CASE', 'YEAR']
+vehicle_columns = ['NUMOCCS', 'MAKE', "MOD_YEAR",'REG_STAT', 'L_STAT', 'DR_ZIP', 'DR_HGT', 'DR_WGT', 'DR_DRINK', 
+'DEATHS', 'VEH_NO', 'TRAV_SP', 'ST_CASE', 'YEAR']
 
 accident_schema = types.StructType([
     types.StructField("ST_CASE", types.StringType(), True),
@@ -73,7 +75,6 @@ accident_schema = types.StructType([
     types.StructField("LATITUDE", types.StringType(), True),
     types.StructField("LONGITUD", types.StringType(), True)
 ])
-
 person_schema = types.StructType([
     types.StructField("AGE", types.StringType(), True),
     types.StructField("SEX", types.StringType(), True),
@@ -87,9 +88,7 @@ person_schema = types.StructType([
     types.StructField("PER_NO", types.StringType(), True),
     types.StructField("ST_CASE", types.StringType(), True),
     types.StructField("YEAR", types.StringType(), True),
-
 ])
-
 vehicle_schema = types.StructType([
     types.StructField("NUMOCCS", types.StringType(), True),
     types.StructField("MAKE", types.StringType(), True),
@@ -107,9 +106,8 @@ vehicle_schema = types.StructType([
     types.StructField("YEAR", types.StringType(), True)
 ])
 
-
 def create_df_from_gcs(file_input_path, file_type, file_cols_to_select, file_schema):
-
+    """"""
     df= spark.createDataFrame([], schema=file_schema)
     year = 1975
 
@@ -139,7 +137,8 @@ df_vehicle = df_vehicle.repartition(100)
 
 
 def states(state):
-    
+    """
+    """
     dict_states = {
         '1': 'Alabama', '2': 'Alaska', '4': 'Arizona', '5': 'Arkansas', '6': 'California', '8': 'Colorado', 
         '9': 'Connecticut', '10': 'Delaware', '11': 'District of Columbia', '12': 'Florida','13': 'Georgia', 
@@ -160,7 +159,6 @@ def states(state):
         return "Unknown"
     
 states_udf = F.udf(states, returnType=types.StringType())
-
 df_accident = df_accident.filter(df_accident.STATE != 'STATE')
 
 #Add Year Column
@@ -362,7 +360,6 @@ df_accident = df_accident.withColumn("RELATION_TO_TRAFFICWAY", F.when(F.col('REL
                   .when((F.col('REL_ROAD') == '9') | (F.col('REL_ROAD') == '99'), 'Unknown') \
                   .otherwise(df_accident.REL_ROAD))
 
-
 ###Temp View
 df_accident.createOrReplaceTempView('all_accidents')
 df_result = spark.sql("""
@@ -403,7 +400,6 @@ df_result = spark.sql("""
 """)
 
 """FOR THE PERSONS FILE"""
-
 #Filter out header columns
 df_person = df_person.filter(df_person.AGE != 'AGE')
 
@@ -513,12 +509,10 @@ df_person = df_person.withColumn('VEH_MAKE', F.when(df_person.MAKE == '1', 'Amer
                                  .when(df_person.MAKE == '98', 'Other Make').when(df_person.MAKE == '99', 'Unknown Make') \
                                  .otherwise(df_person.MAKE)
                                 )
-
 ###TEMP VIEW FOR PERSON FILES
 df_person.createOrReplaceTempView('all_persons')
 
 """FOR VEHICLE FILE"""
-
 df_vehicle = df_vehicle.filter(df_vehicle.ST_CASE != 'ST_CASE')
 
 #YEAR and UNIQ_ID
@@ -636,7 +630,6 @@ ON
 """)
 
 #Writing the query
-
 df_accident_vehicle_joined = spark.sql("""
     SELECT
         CAST(acc.UNIQ_ID AS STRING) AS Case_Number,
@@ -678,7 +671,6 @@ df_accident_vehicle_joined = spark.sql("""
 """)
 
 #Query for ACCIDENT FILE JOIN PERSON FILE
-
 df_accident_person_joined = spark.sql("""
      SELECT
         CAST(acc.UNIQ_ID AS STRING) AS Case_Number,
@@ -724,21 +716,16 @@ df_result.write.format('bigquery') \
     .option('dataset', '<YOUR DATASET NAME>') \
     .option('table', '<TABLE NAME TO SAVE AS>') \
     .save()
-
 df_accident_person_joined.write.format('bigquery') \
     .option('project', '<YOUR GOOGLE CLOUD PROVIDER PROJECT>') \
     .option('dataset', '<YOUR DATASET NAME>') \
     .option('table', '<TABLE NAME TO SAVE AS>') \
     .save()
-
-
 df_person_vehicle_joined.write.format('bigquery') \
     .option('project', '<YOUR GOOGLE CLOUD PROVIDER PROJECT>') \
     .option('dataset', '<YOUR DATASET NAME>') \
     .option('table', '<TABLE NAME TO SAVE AS>') \
     .save()
-
-
 df_accident_vehicle_joined.write.format('bigquery') \
     .option('project', '<YOUR GOOGLE CLOUD PROVIDER PROJECT>') \
     .option('dataset', '<YOUR DATASET NAME>') \
