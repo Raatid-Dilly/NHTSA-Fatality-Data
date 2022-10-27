@@ -4,12 +4,11 @@ National Highway Traffic Safety Administration Fatality Analysis Report for data
 **Google DataStudio Dashboard for results can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
 
 ## Project Overview
-This project was performed as part of the [Data Engineering Zoomcamp Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) to use the course materials learned to build a data pipeline.
+This project was performed as part of the [Data Engineering Zoomcamp Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) to use the course materials learned to build a data pipeline.  
 
 ## Objective
-The National Highway Traffic Safety Administration is an agency that is part of the United States federal government. Their mission is the preservation of human lives and to reduce vehicle-related accidents related to transportation.
+The National Highway Traffic Safety Administration is an agency that is part of the United States federal government. Their mission is the preservation of human lives and to reduce vehicle-related accidents related to transportation.The goals of this project are the following:
 
-The goals of this project are the following:
 * Develop a data pipeline that will extract the data from the source for each year from 1975-2000
 * Transform the data so it can be analyzed
 * Load the final data into a BigQuery table
@@ -46,7 +45,7 @@ The project utilizes the following technologies:
   - Google Data Studio
 
 # Work
-**Local Development** - Before beginning the cloud process, the first step I took was local analysis of the data. To begin locally run the [```download_data.sh```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/download_data.sh) script which will download all the ```['Accident.csv', Person.csv, Vehicle.csv]``` files from the NHTSA site. Next use the [```local_spark.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/local_spark.py) script to format the columns in each .csv file and save the .csv to .parquet. After this is complete the parquet files could then be read and transformed with PySpark.
+**Local Development** - Before beginning the cloud process, the first step I took was local analysis of the data. To begin local development run the [```download_data.sh```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/download_data.sh) script which will download all the ```['Accident.csv', Person.csv, Vehicle.csv]``` files from the NHTSA site. Next use the [```local_spark.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/local/local_spark.py) script to format the columns in each .csv file and save the .csv to .parquet. After this is complete the parquet files could then be read and transformed with PySpark.
 
 ```
 df = spark.read.option('header', 'true').parquet('./local/accident.parquet')
@@ -82,9 +81,9 @@ df = df.withColumn('STATE', states_udf(df.STATE))
 df.select('STATE').distinct().show()
 ```
 
-**Google Cloud Platform** - Next was creating a [GCP account](https://cloud.google.com). This included creating a new project in the cloud for this project and setting the necessary permission that are required to have access to files. These include (Storage Admin, Storage Object Admin, BigQuery Admin, Dataproc Administrator, and Dataproc Worker). It is also important to download the google auth-keys .json file on the Service Account Page. Refer [here](https://cloud.google.com/docs/authentication/provide-credentials-adc) for instructions on how to properly authenticate.
+**Google Cloud Platform** - Next was creating a [GCP account](https://cloud.google.com). This included creating a new project in the cloud for this project and setting the necessary permission that are required to have access to files. These include (``Storage Admin``, ``Storage Object Admin``, ``BigQuery Admin``, ``Dataproc Administrator``, and ``Dataproc Worker``). It is also important to download the ``google auth-keys .json file`` on the Service Account Page. Refer [here](https://cloud.google.com/docs/authentication/provide-credentials-adc) for instructions on how to properly authenticate.
 
-**Infrastructure as Code Iac (Terraform)** - Terraform is used to setup the neccessary google cloud storage(Data Lake) and BigQuery Datasets (Data Warehouse) for the project. To begin the Terraform process, go to the Terraform directory in your CLI and run the following:
+**Infrastructure as Code Iac (Terraform)** - Terraform is used to setup the neccessary ``Google Cloud Storage`` (Data Lake) and ``Google BigQuery`` Datasets (Data Warehouse) for the project. To begin the Terraform process, go to the Terraform directory in your CLI and run the following:
   - ```terraform init```
   - ```terraform plan``` (Will need to specify GCP Project)
   - ```terraform apply``` (Will need to specify GCP Project)
@@ -100,6 +99,6 @@ df.select('STATE').distinct().show()
 # Results
 **Google DataStudio Dashboard can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
 
-**Dashboard Example** - Here is an example of the Dashboard filtered by Chevrolet vehicles. It is clear that most fatalies involving Chevrolets occur in Texas and the amount of accidents and the amount of deaths has been on a decline since 1975.
+**Dashboard Example** - Here is an example of the Dashboard filtered by Chevrolet vehicles. It is clear that most fatalies involving Chevrolets occur in Texas and the amount of accidents and deaths per year has been gradually declining since 1975.
 
 ![alt dashboard](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA_Fatality_Analysis_Report_(FARS)1.jpg)
