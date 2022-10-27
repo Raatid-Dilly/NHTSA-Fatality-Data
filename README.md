@@ -93,10 +93,72 @@ Terraform is used to setup the neccessary ``Google Cloud Storage`` (Data Lake) a
 
 ### Apache Airflow Orchestration
 
-Apache Airflow is used to orchestrate the data ingestion and transformation pipelines and is ran in a [Docker](https://www.docker.com) container locally. The [airflow/dags](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/airflow/dags) directory contains the data-ingestion and transformation scripts that were executed.
+Apache Airflow is used to orchestrate the data ingestion and transformation pipelines and is ran in a [Docker](https://www.docker.com) container locally. Sample of ``docker-compose`` file:
+
+```
+
+version: '3'
+x-airflow-common:
+  &airflow-common
+  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
+  #image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.3.1}
+  build: 
+    context: .
+    dockerfile: ./Dockerfile
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    # For backward compatibility, with Airflow <2.3
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    GOOGLE_APPLICATION_CREDENTIALS: <PATH TO YOUR GOOGLE APPLICATIONS CREDENTIALS .json FILE>
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=<PATH TO YOUR GOOGLE APPLICATIONS CREDENTIALS .json FILE>'
+    GCP_PROJECT_ID: '<YOUR GCP PROJECT ID/NAME>'
+    GCP_GCS_BUCKET: '<YOUR GCP GOOGLE CLOUD STORAGE DATA LAKE BUCKET NAME>'
+    GCP_REGION: '<YOUR GCP REGION>'
+    GCP_DATAPROC_CLUSTER: '<YOUR GCP DATAPROC CLUSTER NAME>'
+
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ~/.google/google_credentials/:/.google/credentials:ro
+    
+   ```
+It is important to set your own:
+
+- ``GOOGLE_APPLICATION_CREDENTIALS`` - Path to Google Applications credentials .json file
+- ``AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT`` - Add the path to Google credentials .json file 
+- ``GCP_PROJECT_ID`` - Google Project ID/Name
+- ``GCP_GCS_BUCKET`` - Google Cloud Storage Data Lake Bucket (Should be the same as one created by Terraform)
+- ``GCP_REGION`` - Google Cloud Region (Based on the location of your services)
+- ``GCP_DATAPROC_CLUSTER`` - Name of DataProc Cluster
+
+The [airflow/dags](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/airflow/dags) directory contains the data-ingestion and transformation scripts that were executed.
+
 - ```data-ingestion_dag.py``` - DAG that downloads the NHTSA data for each year from 1975-2020 and uploads the information to the created Google data lake.
 - ```create_external_table_dag.py``` - DAG to create an external table for viewing the uploaded data from the data lake
 - ```dataproc_dag.py``` - DAG to create the DataProc Cluster and submit the PySpark job that performs the necessary data transformation. The script that will be used is found in the ```airflow``` directory and is [```pyspark_data_transform.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/airflow/pyspark_data_transform.py) After the job is finished and saved to a BigQuery Dataset, the Cluster is deleted as to not incur usage fees.
+
+To run Airflow cd <path-to-your-docker-compose.file> and run the following shell commands:
+
+- ``docker-compose build`` - Builds the docker image
+- ``docker-compose up airflow-init`` - Initializes all the Airflow components
+- ``docker-compose up -d`` - Starts all the services in the container and runs in detached mode so you can still use the terminal
+
+To view the Airflow UI open a web browser and go to https://localhost:8080 and enter airflow for both the username and password. The DAGs that are listed in the airflow/dags folder should be listed on the UI page. Simply run the DAG and wait for it to be finish. When complete the tasks that are described in the DAG should have all been executed and the NHTSA data should now be in your GCS data lake and as an External Table in Google BigQuery. To stop Airflow, run the following in your terminal:
+
+- ``docker-compose down``
+
 
 # Results
 **Google DataStudio Dashboard can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
