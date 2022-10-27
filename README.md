@@ -83,15 +83,17 @@ df.select('STATE').distinct().show()
 
 **Google Cloud Platform** - Next was creating a [GCP account](https://cloud.google.com). This included creating a new project in the cloud for this project and setting the necessary permission that are required to have access to files. These include (``Storage Admin``, ``Storage Object Admin``, ``BigQuery Admin``, ``Dataproc Administrator``, and ``Dataproc Worker``). It is also important to download the ``google auth-keys .json file`` on the Service Account Page. Refer [here](https://cloud.google.com/docs/authentication/provide-credentials-adc) for instructions on how to properly authenticate.
 
-**Infrastructure as Code Iac (Terraform)** - Terraform is used to setup the neccessary ``Google Cloud Storage`` (Data Lake) and ``Google BigQuery`` Datasets (Data Warehouse) for the project. To begin the Terraform process, go to the Terraform directory in your CLI and run the following:
+### Infrastructure as Code IaC (Terraform)
+
+Terraform is used to setup the neccessary ``Google Cloud Storage`` (Data Lake) and ``Google BigQuery`` Datasets (Data Warehouse) for the project. The [files](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/terraform) used for data lake and warehouse setup can be found in the ``terraform`` directory. Additionally, [HashiCorp](https://developer.hashicorp.com/terraform/tutorials/gcp-get-started) provides a great resource/tutorial to learn about using GCP with Terraform.  After creating files for the Terraform, to begin process go to the Terraform directory in your CLI and run the following:
   - ```terraform init```
   - ```terraform plan``` (Will need to specify GCP Project)
   - ```terraform apply``` (Will need to specify GCP Project)
   - The ```terraform destroy``` command will remove the the storage and BigQuery Datasets from the Cloud
-  
-**Terraform configuaration files can be found [here](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/terraform)**
 
-**Apache Airflow Orchestration** - Apache Airflow is used to orchestrate the data ingestion and transformation pipelines and is ran in a [Docker](https://www.docker.com) container locally. The [airflow/dags](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/airflow/dags) directory contains the data-ingestion and transformation scripts that were executed.
+### Apache Airflow Orchestration
+
+Apache Airflow is used to orchestrate the data ingestion and transformation pipelines and is ran in a [Docker](https://www.docker.com) container locally. The [airflow/dags](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/tree/main/airflow/dags) directory contains the data-ingestion and transformation scripts that were executed.
 - ```data-ingestion_dag.py``` - DAG that downloads the NHTSA data for each year from 1975-2020 and uploads the information to the created Google data lake.
 - ```create_external_table_dag.py``` - DAG to create an external table for viewing the uploaded data from the data lake
 - ```dataproc_dag.py``` - DAG to create the DataProc Cluster and submit the PySpark job that performs the necessary data transformation. The script that will be used is found in the ```airflow``` directory and is [```pyspark_data_transform.py```](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/airflow/pyspark_data_transform.py) After the job is finished and saved to a BigQuery Dataset, the Cluster is deleted as to not incur usage fees.
