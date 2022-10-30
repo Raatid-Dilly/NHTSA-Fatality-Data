@@ -1,7 +1,7 @@
 # National Highway Traffic and Safety Administration (NHTSA) ETL Data Pipeline
 NHTSA Fatality Analysis Report for data from 1975-2020.
 
-**Google DataStudio Dashboard for results can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
+**Google Data Studio Dashboard for results can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
 
 ## Project Overview
 This project was performed as part of the [Data Engineering Zoomcamp Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) to use the course materials learned to build a data pipeline. The National Highway Traffic Safety Administration is an agency that is part of the United States federal government. Their mission is the preservation of human lives and to reduce vehicle-related accidents related to transportation.The goals of this project are the following:
