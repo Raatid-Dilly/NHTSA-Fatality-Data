@@ -17,7 +17,7 @@ RUN apt-get update -qq \
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH="${JAVA_HOME}/bin/:${PATH}"
 
-#Airflow Recipe
+#Recipe
 SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
 
 ARG CLOUD_SDK_VERSION=322.0.0
