@@ -156,10 +156,39 @@ To view the Airflow UI open a web browser and go to https://localhost:8080 and e
 
 - ``docker-compose down``
 
-
 # Results
 **Google DataStudio Dashboard can be viewed [here](https://datastudio.google.com/reporting/39c186d2-90ba-4d1a-8d1a-2db046e93641).**
 
 **Dashboard Example** - Here is an example of the Dashboard filtered by Chevrolet vehicles. It is clear that most fatalies involving Chevrolets occur in Texas and the amount of accidents and deaths per year has been gradually declining since 1975.
 
 ![alt dashboard](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/images/NHTSA_Fatality_Analysis_Report_(FARS)1.jpg)
+
+# BigQuery Machine Learning
+
+To forecast the number of deaths in each state for 2021-2023, BigQuery ML is used with the ARIMA model. Preview of BigQuery SQL to train the model:
+
+```
+
+CREATE OR REPLACE MODEL `dataset.accidents_arima_model`
+OPTIONS
+  (
+    model_type = 'ARIMA_PLUS',
+    time_series_timestamp_col = 'Year',
+    time_series_data_col = 'Fatals',
+    time_series_id_col = 'State',
+    auto_arima_max_order = 5,
+    data_frequency = 'yearly'
+  ) AS
+SELECT
+   Year, State, SUM(Fatals) AS Fatals
+FROM
+    `dataset.accidents_arima_model`
+WHERE
+    Year IS NOT NULL
+GROUP BY 1, 2
+
+```
+
+Predicted forecast for Top 3 States with highest number of deaths from accidents:
+
+![alt three](https://github.com/Raatid-Dilly/NHTSA-Fatality-Data/blob/main/BigQ/Top_3_Forecast.jpg)
